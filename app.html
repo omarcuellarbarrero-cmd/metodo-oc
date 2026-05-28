@@ -15,6 +15,93 @@
 
     <script>
         // 1. Lógica de Firebase (Usted ya la tiene, solo manténgala)
+        <script type="module">
+        // ── 1. Importaciones Firebase ────────────────────────────
+        import { initializeApp }                        from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
+        import { getAuth, signInWithEmailAndPassword,
+                 signOut, onAuthStateChanged }          from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
+
+        // ── 2. Configuración del proyecto Firebase ───────────────
+        //  ⚠️  REEMPLAZA estos valores con los de tu proyecto:
+        //  Firebase Console → Configuración del proyecto → Tu aplicación web
+        const firebaseConfig = {
+            apiKey:            "AIzaSyCGPci2Tjb101nAaZUOh_3K_lpSmxfSDGw",
+            authDomain:        "metodooc-alumnos.firebaseapp.com",
+            projectId:         "metodooc-alumnos",
+            storageBucket:     "metodooc-alumnos.firebasestorage.app",
+            messagingSenderId: "25552565653",
+            appId:             "1:255525656537:web:a8b35c75de615e889c6bc8"
+        };
+
+        // ── 3. Inicialización ────────────────────────────────────
+        const app  = initializeApp(firebaseConfig);
+        const auth = getAuth(app);
+
+        // ── 4. Observer de sesión: controla qué pantalla mostrar ─
+        onAuthStateChanged(auth, (user) => {
+            if (user) {
+                // Usuario autenticado → mostrar app
+                document.getElementById("login-screen").style.display = "none";
+                document.getElementById("app-screen").style.display   = "block";
+                document.getElementById("user-email-display").textContent = user.email;
+                // Exportar email al scope global para uso en consultarDiagnostico()
+                window._usuarioActual = user.email;
+            } else {
+                // Sin sesión → mostrar login
+                document.getElementById("login-screen").style.display = "flex";
+                document.getElementById("app-screen").style.display   = "none";
+                window._usuarioActual = null;
+            }
+        });
+
+        // ── 5. Función de inicio de sesión (global) ──────────────
+        window.iniciarSesion = async function () {
+            const email = document.getElementById("login-email").value.trim();
+            const pass  = document.getElementById("login-pass").value;
+            const btn   = document.getElementById("btn-login");
+            const err   = document.getElementById("login-error");
+
+            err.textContent = "";
+
+            if (!email || !pass) {
+                err.textContent = "⚠️ Ingrese correo y contraseña.";
+                return;
+            }
+
+            btn.disabled  = true;
+            btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Verificando...';
+
+            try {
+                await signInWithEmailAndPassword(auth, email, pass);
+                // onAuthStateChanged manejará la redirección
+            } catch (e) {
+                // Mensajes de error amigables en español
+                const mensajes = {
+                    "auth/user-not-found":    "No existe una cuenta con ese correo.",
+                    "auth/wrong-password":    "Contraseña incorrecta.",
+                    "auth/invalid-email":     "El formato del correo no es válido.",
+                    "auth/too-many-requests": "Demasiados intentos. Intente más tarde.",
+                    "auth/invalid-credential":"Correo o contraseña incorrectos.",
+                };
+                err.textContent = mensajes[e.code] || `Error: ${e.message}`;
+            } finally {
+                btn.disabled  = false;
+                btn.innerHTML = '<i class="fa-solid fa-right-to-bracket"></i> Ingresar';
+            }
+        };
+
+        // ── 6. Función de cierre de sesión (global) ──────────────
+        window.cerrarSesion = async function () {
+            await signOut(auth);
+        };
+
+        // ── 7. Permitir login con tecla Enter ────────────────────
+        document.getElementById("login-pass").addEventListener("keydown", (e) => {
+            if (e.key === "Enter") window.iniciarSesion();
+        });
+    </script>
+
+        
         // Cuando Firebase confirme usuario:
         // document.getElementById('btn-diagnostico').disabled = false;
 

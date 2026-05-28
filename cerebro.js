@@ -16,7 +16,7 @@ app.get('/app.html', (req, res) => {
 });
 
 // Ruta de API para obtener los tips dinámicamente
-app.get('/api/tips-data', (req, res) => {
+app.get('/tips.js', (req, res) => {
     try {
         const tips = fs.existsSync('./tips.js') ? fs.readFileSync('./tips.js', 'utf8') : "No hay tips disponibles.";
         res.setHeader('Content-Type', 'application/javascript');
