@@ -1,0 +1,17 @@
+{
+  "name": "metodo-oc-sistema",
+  "version": "1.0.0",
+  "description": "Sistema de diagnóstico técnico Método OC",
+  "main": "cerebro.js",
+  "type": "module",
+  "scripts": {
+    "start": "node cerebro.js"
+  },
+  "dependencies": {
+    "@google/generative-ai": "^0.1.3",
+    "express": "^4.18.2"
+  },
+  "engines": {
+    "node": ">=18.0.0"
+  }
+}

@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Método OC - Diagnóstico</title>
+    <!-- Firebase SDK aquí -->
+    <script src="https://www.gstatic.com/firebasejs/9.0.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.0.0/firebase-auth-compat.js"></script>
+</head>
+<body>
+    <h1>Panel de Diagnóstico Técnico</h1>
+    <div id="auth-status">Verificando usuario...</div>
+    
+    <input id="marca" placeholder="Marca">
+    <button id="btn-diagnostico" disabled>Analizar Circuito</button>
+
+    <script>
+        // 1. Lógica de Firebase (Usted ya la tiene, solo manténgala)
+        // Cuando Firebase confirme usuario:
+        // document.getElementById('btn-diagnostico').disabled = false;
+
+        // 2. Consulta dinámica a su VPS
+        async function obtenerTips() {
+            const respuesta = await fetch('/api/tips-data');
+            const data = await respuesta.text();
+            console.log("Tips cargados desde el VPS:", data);
+        }
+
+        // Cargar tips al iniciar
+        obtenerTips();
+    </script>
+</body>
+</html>
